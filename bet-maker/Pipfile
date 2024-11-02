@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pydantic-settings = "*"
+fastapi = "*"
+pydantic = "*"
+uvicorn = "*"
+sqlalchemy = "*"
+alembic = "*"
+asyncpg = "*"
+python-jose = {extras = ["cryptography"], version = "*"}
+passlib = "*"
+python-multipart = "*"
+fastapi-cache2 = "*"
+aioredis = "*"
+redis = "*"
+aiokafka = "*"
+httpx = "*"
+setuptools = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

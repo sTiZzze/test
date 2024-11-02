@@ -1,0 +1,85 @@
+version: '3.8'
+
+
+services:
+  line-provider:
+    build:
+      context: ./line-provider
+    volumes:
+      - ./line-provider/:/app/
+    ports:
+      - "8001:8001"
+    depends_on:
+      - kafka
+    networks:
+      - connect
+
+  bet-maker:
+    build:
+      context: ./bet-maker
+    volumes:
+      - ./bet-maker/:/app/
+    ports:
+      - "8002:8002"
+    depends_on:
+      - kafka
+    networks:
+      - connect
+
+  postgres:
+    image: ${DB_IMAGE}
+    env_file:
+      - ./bet-maker/.env
+    volumes:
+      - ./.var/postgresql:/var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_PORT}
+    networks:
+      - connect
+
+  redis:
+    image: ${REDIS_IMAGE}
+    container_name: redis_container
+    ports:
+      - ${REDIS_PORT}
+    networks:
+      - connect
+    volumes:
+      - redis_data:/data
+
+  zookeeper:
+    image: ${ZOOKEEPER_IMAGE}
+    container_name: zookeeper_kafka
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - ${ZOOKEEPER_PORT}
+    networks:
+      - connect
+
+  kafka:
+    image: ${KAFKA_IMAGE}
+    container_name: parser-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - ${KAFKA_PORT}
+    networks:
+      - connect
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+
+networks:
+  connect:
+    driver: bridge
+
+
+volumes:
+  redis_data:

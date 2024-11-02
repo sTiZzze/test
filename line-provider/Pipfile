@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+pydantic = "*"
+pytest = "*"
+pytest-asyncio = "*"
+httpx = "*"
+trio = "*"
+aiokafka = "*"
+aioredis = "*"
+fastapi-cache2 = "*"
+redis = "*"
+pydantic-settings = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
